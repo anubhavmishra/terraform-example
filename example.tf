@@ -1,12 +1,13 @@
 #--------------------------------------------------------------
 # Instance
 #--------------------------------------------------------------
-resource "aws_instance" "main" {
-    instance_type = "t2.micro"
+resource "terraform_remote_state" "example" {
+    backend = "atlas"
+    config {
+        name = "anubhavmishra/example"
+    }
+}
 
-    # Trusty 14.04
-    ami = "ami-fce3c696"
-
-    # This will create 1 instances
-    count = 0
+resource "aws_eip" "lb" {
+    instance = "${terraform_remote_state.example.output.instance_id}"
 }
